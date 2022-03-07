@@ -83,7 +83,8 @@ public class ChatNioServer {
             SocketChannel client = (SocketChannel) selectionKey.channel();
             //接收消息
             String message = receive(client);
-            System.out.println("收到客户端消息:"+message);
+            System.out.println("收到客户端:"+client.getRemoteAddress()+" 消息:"+message);
+            message = client.getRemoteAddress()+"说："+message;
             //发送给其他客户端
             sendMassage(selector,client,message);
             if ("exit".equals(message)){

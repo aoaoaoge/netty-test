@@ -43,7 +43,7 @@ public class ChatAioServer {
             ExecutorService executorService = new ThreadPoolExecutor(
                     1, 3,
                     20, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<Runnable>(), r -> new Thread("ChatAioServerThread"));
+                    new LinkedBlockingQueue<>(), r -> new Thread(r,"ChatAioServerThread"));
             asynchronousChannelGroup = AsynchronousChannelGroup.withThreadPool(executorService);
             //创建通道
             serverSocketChannel = AsynchronousServerSocketChannel.open(asynchronousChannelGroup);

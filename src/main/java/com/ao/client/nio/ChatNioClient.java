@@ -9,6 +9,10 @@ import java.nio.channels.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: aoyh
@@ -25,6 +29,10 @@ public class ChatNioClient {
     private Selector selector;
     private SocketChannel clientChannel;
     private Charset charset = StandardCharsets.UTF_8;
+
+    ThreadPoolExecutor threadPool = new ThreadPoolExecutor(0, 10,60 ,
+            TimeUnit.SECONDS, new SynchronousQueue<>(),
+            r->new Thread(r,"接收消息处理线程"));
 
     public void start(){
         try {
@@ -55,7 +63,7 @@ public class ChatNioClient {
             if (clientChannel.finishConnect()) {
                 System.out.println("连接服务器成功！");
                 //创建线程处理用户输入
-                new Thread(new UserInputNioHandler(this)).start();
+                threadPool.execute(new UserInputNioHandler(this));
             }
             //监听服务器转发的消息
             clientChannel.register(selector,SelectionKey.OP_READ);
