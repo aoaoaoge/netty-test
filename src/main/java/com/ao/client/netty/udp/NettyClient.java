@@ -1,4 +1,4 @@
-package com.ao.client.natty;
+package com.ao.client.netty.udp;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;

@@ -1,9 +1,7 @@
-package com.ao.server.natty;
+package com.ao.server.netty.udp;
 
 import io.netty.channel.ChannelHandlerContext;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NettyBean {

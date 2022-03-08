@@ -1,6 +1,5 @@
-package com.ao.server.natty;
+package com.ao.server.netty.udp;
 
-import com.ao.client.natty.NettyClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
