@@ -8,6 +8,7 @@ spring:
 nettyServer:
   ip: 127.0.0.1
   port: 8888
+  tcpPort: 8878
 
 nettyClient:
   ip: 127.0.0.1

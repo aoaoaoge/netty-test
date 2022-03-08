@@ -9,6 +9,7 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.SynchronousQueue;
@@ -20,18 +21,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * udp服务
  */
+@Component
 public class NettyServer {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServer.class);
 
     private final AtomicInteger threadNumber = new AtomicInteger(1);
 
-    ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 10, 60,
+    ThreadPoolExecutor executor = new ThreadPoolExecutor(0, 10, 60,
             TimeUnit.SECONDS, new SynchronousQueue<Runnable>()
             , r -> new Thread(r,"NettyServer-Thread" + threadNumber.getAndIncrement()));
 
     @Autowired
-    NettyServerHandler nettyServerHandler;
+    private NettyServerHandler nettyServerHandler;
+
+    private ChannelFuture channelFuture;
 
     public void start(InetSocketAddress address) {
         try {
@@ -45,8 +49,8 @@ public class NettyServer {
                             .option(ChannelOption.SO_BROADCAST, true)
                             .handler(nettyServerHandler);
                     LOG.info("--------------服务端upd服务启动----------------");
-                    ChannelFuture channelFuture = b.bind(address.getAddress(),address.getPort()).sync();
-                    System.out.println("服务器正在监听数据......");
+                    channelFuture = b.bind(address.getAddress(),address.getPort()).sync();
+                    System.out.println("udp服务器正在监听数据......");
                     channelFuture.channel().closeFuture().await();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -57,5 +61,9 @@ public class NettyServer {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void stop() throws InterruptedException {
+        channelFuture.channel().closeFuture().sync();
     }
 }
